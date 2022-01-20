@@ -1,6 +1,7 @@
-import '../styles/globals.css'
-import type { AppProps } from 'next/app'
-import Head from 'next/head'
+import "../styles/globals.css";
+import type { AppProps } from "next/app";
+import Head from "next/head";
+import { UserProvider } from "../components/UserContext";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
@@ -13,9 +14,11 @@ function MyApp({ Component, pageProps }: AppProps) {
           rel="stylesheet"
         />
       </Head>
-      <Component {...pageProps} />
+      <UserProvider inital={false}>
+        <Component {...pageProps} />
+      </UserProvider>
     </>
-  )
+  );
 }
 
-export default MyApp
+export default MyApp;
