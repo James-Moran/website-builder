@@ -3,15 +3,18 @@ import { Toaster } from "react-hot-toast";
 
 export default function Home() {
   const handleProtected = async () => {
-    const response = await fetch("http://localhost:8000/users/checklogin", {
+    await fetch("http://localhost:8000/users/checklogin", {
       method: "GET",
       credentials: "include",
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
       },
-    });
-    console.log(await response.json());
+    })
+      .then((res) => console.log(res.json))
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   return (

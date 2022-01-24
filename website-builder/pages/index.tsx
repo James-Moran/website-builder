@@ -8,17 +8,12 @@ export default function Index({
   success: boolean;
   shop?: any;
 }) {
-  if (success) {
-    console.log(shop);
-    return <Shop shop={shop} />;
-  } else {
-    return <Home />;
-  }
+  return <Home />;
 }
 
 export const getServerSideProps = async (ctx: any) => {
   const wildcard = ctx.req.headers.host.split(".")[0];
-  const whitelist = ["localhost:3000"];
+  const whitelist = ["onepageshop"];
   if (whitelist.indexOf(wildcard) === -1) {
     const res = await fetch("http://localhost:8000/shops/name/" + wildcard, {
       method: "GET",
@@ -27,7 +22,11 @@ export const getServerSideProps = async (ctx: any) => {
         Accept: "application/json",
         "Content-Type": "application/json",
       },
-    }).then((res) => res.json());
+    })
+      .then((res) => res.json())
+      .catch((err) => {
+        return { props: { success: false } };
+      });
 
     if (res !== null && res.success === true) {
       return { props: { success: true, shop: res.shop } };
@@ -35,7 +34,7 @@ export const getServerSideProps = async (ctx: any) => {
       return {
         redirect: {
           permanent: false,
-          destination: "http://localhost:3000",
+          destination: "https://onepageshop.co",
         },
       };
     }
@@ -54,7 +53,11 @@ export const getServerSideProps = async (ctx: any) => {
       method: "GET",
       credentials: "include",
       ...config,
-    }).then((res) => res.json());
+    })
+      .then((res) => res.json())
+      .catch((err) => {
+        return { props: { success: false } };
+      });
 
     console.log("res");
     console.log(res);
