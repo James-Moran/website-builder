@@ -1,106 +1,75 @@
-import Head from "next/head";
-import { useState } from "react";
-import Navbar from "../components/navbar";
-import { useUser } from "../components/UserContext";
+import Home from "../components/Home";
+import Shop from "../components/Shop";
 
-export default function Index({ loggedIn }: { loggedIn: boolean }) {
-  const [user, setUser] = useUser();
+export default function Index({
+  success,
+  shop,
+}: {
+  success: boolean;
+  shop?: any;
+}) {
+  if (success) {
+    console.log(shop);
+    return <Shop shop={shop} />;
+  } else {
+    return <Home />;
+  }
+}
 
-  const handleProtected = async () => {
-    const response = await fetch("http://localhost:8000/users/checklogin", {
+export const getServerSideProps = async (ctx: any) => {
+  const wildcard = ctx.req.headers.host.split(".")[0];
+  const whitelist = ["localhost:3000"];
+  if (whitelist.indexOf(wildcard) === -1) {
+    const res = await fetch("http://localhost:8000/shops/name/" + wildcard, {
       method: "GET",
-      credentials: "include",
       headers: {
+        cookie: ctx.req.headers.cookie ?? null,
         Accept: "application/json",
         "Content-Type": "application/json",
       },
-    });
-    console.log(await response.json());
-  };
+    }).then((res) => res.json());
 
-  return (
-    <div className="flex flex-col items-center min-h-screen font-serif p-4 text-lg">
-      <div className="max-w-4xl w-full">
-        <Navbar title="Website Builder" />
-        <main>
-          <h2 className="text-2xl font-bold mb-4"></h2>
-        </main>
-        <form>
-          <div className="mb-4">
-            <label className="mb-1" htmlFor="shopname">
-              Shop Name
-            </label>
-            <input
-              id="shopname"
-              type="text"
-              name="shopname"
-              className="py-2 px-3 border border-gray-300 focus:border-red-300 focus:outline-none focus:ring focus:ring-red-200 focus:ring-opacity-50 rounded-md shadow-sm disabled:bg-gray-100 mt-1 block"
-            />
-          </div>
+    if (res !== null && res.success === true) {
+      return { props: { success: true, shop: res.shop } };
+    } else {
+      return {
+        redirect: {
+          permanent: false,
+          destination: "http://localhost:3000",
+        },
+      };
+    }
+  }
 
-          <div className="mb-4">
-            <label className="mb-1" htmlFor="shoplink">
-              Shop Link
-            </label>
-            <input
-              id="shoplink"
-              type="text"
-              name="shoplink"
-              className="py-2 px-3 border border-gray-300 focus:border-red-300 focus:outline-none focus:ring focus:ring-red-200 focus:ring-opacity-50 rounded-md shadow-sm disabled:bg-gray-100 mt-1 block"
-            />
-          </div>
-
-          <div className="mb-4">
-            <label className="mb-1" htmlFor="shoplink">
-              Shop Link
-            </label>
-            <input
-              id="shoplink"
-              type="text"
-              name="shoplink"
-              className="py-2 px-3 border border-gray-300 focus:border-red-300 focus:outline-none focus:ring focus:ring-red-200 focus:ring-opacity-50 rounded-md shadow-sm disabled:bg-gray-100 mt-1 block"
-            />
-          </div>
-        </form>
-
-        <button
-          type="button"
-          className="inline-flex justify-center px-4 py-2 my-4 text-sm font-medium text-white bg-black border border-transparent rounded-md hover:bg-gray-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-red-500 disabled:bg-gray-600"
-          onClick={handleProtected}
-        >
-          Register
-        </button>
-      </div>
-    </div>
-  );
-}
-
-export const getServerSideProps = async (ctx: {
-  req: { headers: { cookie: any } };
-}) => {
-  const cookie = ctx.req.headers.cookie;
-  const config = {
-    headers: {
-      cookie: cookie ?? null,
-      Accept: "application/json",
-      "Content-Type": "application/json",
-    },
-  };
   try {
-    // your isAuthenticated check
+    const cookie = ctx.req ? ctx.req.headers.cookie : null;
+    const config = {
+      headers: {
+        cookie: cookie,
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+    };
     const res = await fetch("http://localhost:8000/users/checklogin", {
       method: "GET",
       credentials: "include",
       ...config,
-    }).then(async (res) => await res.json());
+    }).then((res) => res.json());
+
+    console.log("res");
     console.log(res);
-    return {
-      redirect: {
-        permanent: false,
-        destination: "/create",
-      },
-    };
+
+    if (!res.success) {
+      return { props: { success: false } };
+    } else {
+      return {
+        redirect: {
+          permanent: false,
+          destination: "/create",
+        },
+      };
+    }
   } catch (err) {
-    return { props: { loggedIn: false } };
+    return { props: { success: false } };
   }
 };

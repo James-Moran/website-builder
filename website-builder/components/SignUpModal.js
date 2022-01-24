@@ -2,8 +2,9 @@ import { Fragment, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import isEmail from "validator/lib/isEmail";
 import { useUser } from "./UserContext";
+import toast from "react-hot-toast";
 
-const SignUpModal = ({ isOpen, setIsOpen }) => {
+const SignUpModal = ({ isOpen, setIsOpen, callback }) => {
   const [user, setUser] = useUser();
 
   const [emailLogin, setEmailLogin] = useState("");
@@ -14,43 +15,85 @@ const SignUpModal = ({ isOpen, setIsOpen }) => {
   const [confirmRegister, setConfirmRegister] = useState("");
 
   const handleLogin = async () => {
-    const response = await fetch("http://localhost:8000/users/login", {
-      method: "POST",
-      credentials: "include",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
+    const login = async () =>
+      fetch("http://localhost:8000/users/login", {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username: emailLogin,
+          password: passwordLogin,
+        }),
+      })
+        .then((res) => res.json())
+        .then((res) => {
+          if (res.success === true) {
+            setUser({ loggedIn: true });
+            setIsOpen(false);
+          }
+        })
+        .then(() => {
+          if (callback) {
+            callback();
+          }
+        });
+    toast.promise(
+      login(),
+      {
+        loading: "Logging In",
+        error: "Error Logging In",
+        success: "Welcome Back",
       },
-      body: JSON.stringify({
-        username: emailLogin,
-        password: passwordLogin,
-      }),
-    });
-    const res = await response.json();
-    if (res.success === true) {
-      setUser({ loggedIn: true });
-    }
-    setIsOpen(false);
+      {
+        success: {
+          icon: "👋",
+        },
+      }
+    );
   };
 
   const handleRegister = async () => {
-    const response = await fetch("http://localhost:8000/users/register", {
-      method: "POST",
-      credentials: "include",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
+    const register = async () =>
+      await fetch("http://localhost:8000/users/register", {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username: emailRegister,
+          password: passwordRegister,
+        }),
+      })
+        .then((res) => res.json())
+        .then((res) => {
+          if (res.success === true) {
+            setUser({ loggedIn: true });
+            setIsOpen(false);
+          }
+        })
+        .then(() => {
+          if (callback) {
+            callback();
+          }
+        });
+    toast.promise(
+      register(),
+      {
+        loading: "Registering",
+        error: "Problem Registering",
+        success: "Welcome",
       },
-      body: JSON.stringify({
-        username: emailRegister,
-        password: passwordRegister,
-      }),
-    });
-    const res = await response.json();
-    if (res.success === true) {
-      setUser({ loggedIn: true });
-    }
-    setIsOpen(false);
+      {
+        success: {
+          icon: "👋",
+        },
+      }
+    );
   };
 
   return (

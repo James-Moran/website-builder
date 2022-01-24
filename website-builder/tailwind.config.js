@@ -1,16 +1,17 @@
-const defaultTheme = require('tailwindcss/defaultTheme')
+const defaultTheme = require("tailwindcss/defaultTheme");
 
 module.exports = {
   content: [
-    './pages/**/*.{js,ts,jsx,tsx}',
-    './components/**/*.{js,ts,jsx,tsx}',
+    "./pages/**/*.{js,ts,jsx,tsx}",
+    "./components/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
     extend: {
+      display: ["group-hover"],
       fontFamily: {
-        'serif': ['Poppins', ...defaultTheme.fontFamily.sans]
-      }
+        serif: ["Poppins", ...defaultTheme.fontFamily.sans],
+      },
     },
   },
   plugins: [],
-}
+};

@@ -1,5 +1,7 @@
 import { Dialog } from "@headlessui/react";
 import { useState } from "react";
+import Link from "next/link";
+import toast from "react-hot-toast";
 
 import SignUpModal from "./SignUpModal";
 import { useUser } from "./UserContext";
@@ -9,18 +11,34 @@ export default function Navbar({ title }) {
   const [isOpen, setIsOpen] = useState(false);
 
   const handleLogout = async () => {
-    const response = await fetch("http://localhost:8000/users/logout", {
-      method: "GET",
-      credentials: "include",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
+    const logout = async () =>
+      fetch("http://localhost:8000/users/logout", {
+        method: "GET",
+        credentials: "include",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+      })
+        .then((res) => res.json())
+        .then((res) => {
+          if (res.success === true) {
+            setUser({ loggedIn: false });
+          }
+        });
+    toast.promise(
+      logout(),
+      {
+        loading: "Logging Out",
+        error: "Problem Logging Out",
+        success: "Logged Out",
       },
-    });
-    const res = await response.json();
-    if (res.success === true) {
-      setUser({ loggedIn: false });
-    }
+      {
+        success: {
+          icon: "👋",
+        },
+      }
+    );
   };
 
   return (
@@ -28,9 +46,19 @@ export default function Navbar({ title }) {
       <h1 className="text-xl md:text-4xl font-bold">{title}</h1>
       <nav>
         <ul className="flex flex-row justify-end">
-          <li className="inline font-bold p-2 cursor-pointer underline-offset-8 decoration-4 hover:underline">
-            Create
-          </li>
+          {user.loggedIn ? (
+            <Link href="/create">
+              <li className="inline font-bold p-2 cursor-pointer underline-offset-8 decoration-4 hover:underline">
+                My Store
+              </li>
+            </Link>
+          ) : (
+            <Link href="/create">
+              <li className="inline font-bold p-2 cursor-pointer underline-offset-8 decoration-4 hover:underline">
+                Create
+              </li>
+            </Link>
+          )}
           {user.loggedIn ? (
             <li
               className="inline font-bold p-2 cursor-pointer underline-offset-8 decoration-4 hover:underline"
@@ -48,7 +76,7 @@ export default function Navbar({ title }) {
           )}
         </ul>
       </nav>
-      <SignUpModal isOpen={isOpen} setIsOpen={setIsOpen} />
+      <SignUpModal isOpen={isOpen} setIsOpen={setIsOpen} callback={null} />
     </header>
   );
 }
