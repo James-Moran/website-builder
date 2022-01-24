@@ -1,41 +1,65 @@
-const mongoose = require('mongoose');
-const router = require('express').Router();
-const Shop = mongoose.model('Shop');
-const passport = require('passport');
+const mongoose = require("mongoose");
+const router = require("express").Router();
+const Shop = mongoose.model("Shop");
+const passport = require("passport");
 
-router.get('/:shopname', function (req, res, next) {
+router.get("/name/:shopname", function (req, res, next) {
   const shopname = req.params.shopname;
-  console.log(req.params);
   Shop.findOne({ url: shopname })
     .then((shop) => {
       if (shop == null) {
-        res.json({ err: `Could not find shop ${shopname}` })
+        res.json({ success: false, err: `Could not find shop ${shopname}` });
       } else {
-        res.json(shop);
+        res.json({ success: true, shop });
       }
     })
     .catch((err) => {
-      next(err);
+      res.json({ success: false });
     });
 });
 
-router.post('/shop', passport.authenticate('jwt', { session: false }), function (req, res, next) {
-  const filter = {userid: req.user._id}
-
-  const update = {
-    url: req.body.url,
-    title: req.body.title,
-    price: req.body.price
-  };
-
-  try {
-    Shop.findOneAndUpdate(filter, update, {upsert: true, new: true})
+router.get(
+  "/myshop",
+  passport.authenticate("jwt", { session: false }),
+  function (req, res, next) {
+    console.log("here");
+    Shop.findOne({ userid: req.user._id })
       .then((shop) => {
-        res.json({ success: true, shop });
+        if (shop == null) {
+          res.json({ success: false, err: `Could not find shop ${shopname}` });
+        } else {
+          res.json({ success: true, shop });
+        }
+      })
+      .catch((err) => {
+        next(err);
       });
-  } catch (err) {
-    res.json({ success: false, msg: err });
   }
-});
+);
+
+router.post(
+  "/myshop",
+  passport.authenticate("jwt", { session: false }),
+  function (req, res, next) {
+    console.log("here");
+    const filter = { userid: req.user._id };
+
+    console.log(req.body);
+
+    const update = {
+      ...req.body,
+    };
+
+    try {
+      Shop.findOneAndUpdate(filter, update, { upsert: true, new: true }).then(
+        (shop) => {
+          res.json({ success: true, shop });
+        }
+      );
+    } catch (err) {
+      res.json({ success: false, msg: err });
+    }
+  }
+);
 
 module.exports = router;

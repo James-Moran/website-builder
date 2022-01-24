@@ -4,20 +4,29 @@ const User = mongoose.model("User");
 const passport = require("passport");
 const utils = require("../lib/utils");
 
-router.get(
-  "/checklogin",
-  passport.authenticate("jwt", { session: false }),
-  (req, res, next) => {
-    console.log("Checking Login");
-    res.status(200).json({
-      success: true,
-    });
-  }
-);
+router.get("/checklogin", function (req, res, next) {
+  passport.authenticate(
+    "jwt",
+    {
+      session: false,
+      failureFlash: "Invalid username or password.",
+    },
+    (err, user, info) => {
+      if (user === false) {
+        return res.status(200).json({ success: false });
+      } else {
+        delete user.hash;
+        delete user.salt;
+        return res.status(200).json({ success: true, user });
+      }
+    }
+  )(req, res, next);
+});
 
 router.get("/logout", function (req, res, next) {
+  console.log(req.user);
   console.log("Attempt Logout");
-  res.clearCookie("wbjwt");
+  res.clearCookie("jwt");
   res.status(200).json({
     success: true,
   });
@@ -44,7 +53,7 @@ router.post("/login", function (req, res, next) {
       if (isValid) {
         const tokenObject = utils.issueJWT(user);
         console.log("return cookie");
-        res.cookie("wbjwt", tokenObject.token, {
+        res.cookie("jwt", tokenObject.token, {
           httpOnly: true,
           secure: true,
           sameSite: "none",
@@ -88,7 +97,7 @@ router.post("/register", function (req, res, next) {
     newUser.save().then((user) => {
       const tokenObject = utils.issueJWT(user);
       console.log("return cookie");
-      res.cookie("wbjwt", tokenObject.token, {
+      res.cookie("jwt", tokenObject.token, {
         httpOnly: true,
         secure: true,
         sameSite: "none",

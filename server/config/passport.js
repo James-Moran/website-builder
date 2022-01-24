@@ -9,10 +9,10 @@ const PUB_KEY = fs.readFileSync(pathToKey, "utf8");
 
 const cookieExtractor = (req) => {
   let jwt = null;
+  console.log(req.cookies);
   if (req && req.cookies) {
-    jwt = req.cookies["wbjwt"];
+    jwt = req.cookies["jwt"];
   }
-  jwt = jwt.substring(7);
   return jwt;
 };
 
@@ -29,7 +29,6 @@ module.exports = (passport) => {
   passport.use(
     new JwtStrategy(options, function (jwt_payload, done) {
       User.findOne({ _id: jwt_payload.sub }, function (err, user) {
-        console.log(user.username);
         if (err) {
           return done(err, false);
         }

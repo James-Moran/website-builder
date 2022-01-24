@@ -21,21 +21,26 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 
-const whitelist = ["http://localhost:3000", "http://localhost:8000"];
+const whitelist = [
+  "http://localhost:3000",
+  "http://localhost:8000",
+  "http://192.168.0.22:3000",
+];
 
-var corsOptions = {
-  credentials: true,
-  origin: function (origin, callback) {
-    console.log(origin);
-    if (!origin || whitelist.indexOf(origin) !== -1) {
-      callback(null, true);
-    } else {
-      callback(new Error("Not allowed by CORS"));
-    }
-  },
-};
-
-app.use(cors(corsOptions));
+app.use(
+  cors({
+    credentials: true,
+    preflightContinue: true,
+    origin: function (origin, callback) {
+      console.log("origin " + origin);
+      if (!origin || true) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+  })
+);
 
 /**
  * -------------- ROUTES ----------------
