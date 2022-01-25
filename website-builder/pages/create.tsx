@@ -10,8 +10,7 @@ import SignUpModal from "../components/SignUpModal";
 const initalItem = {
   title: "",
   price: "",
-  imageSrc:
-    "https://jm361websitebuilder.s3.eu-west-2.amazonaws.com/0f2694c5adb1c7d4464e796f25277fc0",
+  imageSrc: "https://unsplash.it/280/200",
 };
 
 const inital = {
