@@ -1,55 +1,37 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useUser } from "../components/UserContext";
+
+import { getMyShop, postMyShop } from "../api-lib/endpoints";
 
 import SettingsModal from "../components/SettingsModal";
 import toast, { Toaster } from "react-hot-toast";
 import SignUpModal from "../components/SignUpModal";
 
+const initalItem = {
+  title: "",
+  price: "",
+  imageSrc: "https://unsplash.it/280/200",
+};
+
 const inital = {
   url: "",
   title: "",
   description: "",
-  items: [{ title: "", price: "", imageSrc: "https://unsplash.it/280/200" }],
+  items: [initalItem],
   color: "bg-white",
 };
 
-export default function Create({
-  loggedIn,
-  shop,
-}: {
-  loggedIn: boolean;
-  shop: any;
-}) {
+export default function Create({ shop }: { shop: any }) {
   const [user, setUser] = useUser();
   const [state, setState] = useState(shop ?? inital);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [loginOpen, setLoginOpen] = useState(false);
   console.log(state);
 
-  useEffect(() => {
-    if (loggedIn) {
-      setUser({ loggedIn: true });
-    }
-  }, []);
-
-  const save = async () => {
-    const res = await fetch("http://localhost:8000/shops/myshop", {
-      method: "POST",
-      credentials: "include",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(state),
-    });
-    const result = await res.json();
-    console.log(result);
-  };
-
   const handleSave = async () => {
     if (user.loggedIn) {
       toast.promise(
-        save(),
+        postMyShop(state),
         {
           loading: "Saving",
           error: "Could not save",
@@ -67,7 +49,7 @@ export default function Create({
   };
 
   const handleAddItem = () => {
-    setState({ ...state, items: [...state.items, { title: "", price: "" }] });
+    setState({ ...state, items: [...state.items, initalItem] });
   };
 
   return (
@@ -77,20 +59,22 @@ export default function Create({
       <Toaster position="bottom-center" />
       <div className="max-w-4xl w-full flex flex-col">
         <div className="fixed bottom-0 right-8">
-          <button
-            type="button"
-            className="inline-flex mx-2 justify-center px-4 py-2 text-sm font-medium text-white bg-black border border-transparent rounded-md hover:bg-gray-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-red-500 disabled:bg-gray-600 max-w-fit"
-            onClick={handleSave}
-          >
-            Save
-          </button>
-          <button
-            type="button"
-            className="inline-flex justify-center px-4 py-2 my-4 text-sm font-medium text-white bg-black border border-transparent rounded-md hover:bg-gray-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-red-500 disabled:bg-gray-600 max-w-fit"
-            onClick={() => setSettingsOpen(true)}
-          >
-            Settings
-          </button>
+          <div className="flex flex-row">
+            <button
+              type="button"
+              className="inline mx-2 justify-center px-4 py-2 text-sm font-medium text-white bg-black border border-transparent rounded-md hover:bg-gray-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-red-500 disabled:bg-gray-600 max-w-fit"
+              onClick={handleSave}
+            >
+              Save
+            </button>
+            <button
+              type="button"
+              className="inline justify-center px-4 py-2 my-4 text-sm font-medium text-white bg-black border border-transparent rounded-md hover:bg-gray-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-red-500 disabled:bg-gray-600 max-w-fit"
+              onClick={() => setSettingsOpen(true)}
+            >
+              Settings
+            </button>
+          </div>
         </div>
 
         <div className="flex flex-col min-h-screen justify-center items-center">
@@ -230,7 +214,7 @@ export default function Create({
       <SignUpModal
         isOpen={loginOpen}
         setIsOpen={setLoginOpen}
-        callback={save}
+        callback={() => postMyShop(state)}
       />
       <SettingsModal
         isOpen={settingsOpen}
@@ -247,21 +231,5 @@ export const getServerSideProps = async (ctx: {
   req: { headers: { cookie: any } };
 }) => {
   const cookie = ctx.req.headers.cookie;
-  const config = {
-    headers: {
-      cookie: cookie ?? null,
-      Accept: "application/json",
-      "Content-Type": "application/json",
-    },
-  };
-  try {
-    const res = await fetch("http://localhost:8000/shops/myshop", {
-      method: "GET",
-      credentials: "include",
-      ...config,
-    }).then(async (res) => await res.json());
-    return { props: { loggedIn: true, shop: res.shop } };
-  } catch (err) {
-    return { props: { loggedin: false } };
-  }
+  return { props: await getMyShop(cookie, true) };
 };

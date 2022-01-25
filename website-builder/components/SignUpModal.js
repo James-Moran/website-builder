@@ -3,6 +3,7 @@ import { Dialog, Transition } from "@headlessui/react";
 import isEmail from "validator/lib/isEmail";
 import { useUser } from "./UserContext";
 import toast from "react-hot-toast";
+import { login, register } from "../api-lib/endpoints";
 
 const SignUpModal = ({ isOpen, setIsOpen, callback }) => {
   const [user, setUser] = useUser();
@@ -14,34 +15,27 @@ const SignUpModal = ({ isOpen, setIsOpen, callback }) => {
   const [passwordRegister, setPasswordRegister] = useState("");
   const [confirmRegister, setConfirmRegister] = useState("");
 
-  const handleLogin = async () => {
-    const login = async () =>
-      fetch("http://localhost:8000/users/login", {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          username: emailLogin,
-          password: passwordLogin,
-        }),
+  const loginWrapper = async () => {
+    await login(emailLogin, passwordLogin)
+      .then((res) => {
+        if (res.success === true) {
+          setUser({ loggedIn: true });
+          setIsOpen(false);
+        }
       })
-        .then((res) => res.json())
-        .then((res) => {
-          if (res.success === true) {
-            setUser({ loggedIn: true });
-            setIsOpen(false);
-          }
-        })
-        .then(() => {
-          if (callback) {
-            callback();
-          }
-        });
+      .then(() => {
+        if (callback) {
+          callback();
+        }
+      })
+      .catch((err) => {
+        console.log("Error logging in");
+      });
+  };
+
+  const handleLogin = async () => {
     toast.promise(
-      login(),
+      loginWrapper(),
       {
         loading: "Logging In",
         error: "Error Logging In",
@@ -55,34 +49,27 @@ const SignUpModal = ({ isOpen, setIsOpen, callback }) => {
     );
   };
 
-  const handleRegister = async () => {
-    const register = async () =>
-      await fetch("http://localhost:8000/users/register", {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          username: emailRegister,
-          password: passwordRegister,
-        }),
+  const registerWrapper = async () => {
+    await register(emailRegister, passwordRegister)
+      .then((res) => {
+        if (res.success === true) {
+          setUser({ loggedIn: true });
+          setIsOpen(false);
+        }
       })
-        .then((res) => res.json())
-        .then((res) => {
-          if (res.success === true) {
-            setUser({ loggedIn: true });
-            setIsOpen(false);
-          }
-        })
-        .then(() => {
-          if (callback) {
-            callback();
-          }
-        });
+      .then(() => {
+        if (callback) {
+          callback();
+        }
+      })
+      .catch((err) => {
+        console.log("Problem registering");
+      });
+  };
+
+  const handleRegister = async () => {
     toast.promise(
-      register(),
+      registerWrapper(),
       {
         loading: "Registering",
         error: "Problem Registering",

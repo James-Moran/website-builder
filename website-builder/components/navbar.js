@@ -5,29 +5,25 @@ import toast from "react-hot-toast";
 
 import SignUpModal from "./SignUpModal";
 import { useUser } from "./UserContext";
+import { logout } from "../api-lib/endpoints";
 
 export default function Navbar({ title }) {
   const [user, setUser] = useUser();
   const [isOpen, setIsOpen] = useState(false);
 
-  const handleLogout = async () => {
-    const logout = async () =>
-      fetch("http://localhost:8000/users/logout", {
-        method: "GET",
-        credentials: "include",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
+  const logoutWrapper = () => {
+    const res = await logout(setUser)
+      .then((res) => {
+        if (res.success) {
+          setUser({ loggedIn: false });
+        }
       })
-        .then((res) => res.json())
-        .then((res) => {
-          if (res.success === true) {
-            setUser({ loggedIn: false });
-          }
-        });
+      .catch((err) => console.log("Problem logging out"));
+  };
+
+  const handleLogout = async () => {
     toast.promise(
-      logout(),
+      logoutWrapper(),
       {
         loading: "Logging Out",
         error: "Problem Logging Out",

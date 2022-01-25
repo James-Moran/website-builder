@@ -22,19 +22,14 @@ const SettingsModal = ({
   };
 
   const handleLogout = async () => {
-    const response = await fetch("http://localhost:8000/users/logout", {
-      method: "GET",
-      credentials: "include",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-    });
-    const res = await response.json();
-    if (res.success === true) {
-      setUser({ loggedIn: false });
-      Router.push("/");
-    }
+    await logout(setUser)
+      .then((res) => {
+        if (res.success) {
+          setUser({ loggedIn: false });
+          Router.push("/");
+        }
+      })
+      .catch((err) => console.log("Problem logging out"));
   };
 
   const handleLogin = async () => {

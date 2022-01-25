@@ -1,5 +1,4 @@
 export default function Shop({ shop }) {
-  console.log(shop);
   return (
     <div className="flex flex-col items-center min-h-screen font-serif p-4 text-lg">
       <div className="max-w-4xl w-full flex flex-col">
