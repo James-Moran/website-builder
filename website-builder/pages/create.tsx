@@ -123,6 +123,7 @@ export default function Create({ shop }: { shop: any }) {
                 <div className="relative">
                   <img
                     width={280}
+                    height={200}
                     className="border-2 border-black rounded"
                     src={product.imageSrc}
                   />
@@ -210,7 +211,7 @@ export default function Create({ shop }: { shop: any }) {
       <SignUpModal
         isOpen={loginOpen}
         setIsOpen={setLoginOpen}
-        callback={handleSave}
+        callback={() => postMyShop(state)}
       />
       <SettingsModal
         isOpen={settingsOpen}

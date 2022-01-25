@@ -18,6 +18,7 @@ export default function Shop({ shop }) {
               <div key={idx} className="flex flex-col">
                 <img
                   width={280}
+                  height={200}
                   src={product.imageSrc}
                   className="border-2 border-black rounded"
                 />
