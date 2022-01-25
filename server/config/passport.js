@@ -9,7 +9,6 @@ const PUB_KEY = fs.readFileSync(pathToKey, "utf8");
 
 const cookieExtractor = (req) => {
   let jwt = null;
-  console.log(req.cookies);
   if (req && req.cookies) {
     jwt = req.cookies["jwt"];
   }

@@ -30,8 +30,9 @@ export default function Index({
 export const getServerSideProps = async (ctx: any) => {
   const wildcard = ctx.req.headers.host.split(".")[0];
   const whitelist = ["onepageshop", "localhost:3000"];
+  const cookie = ctx.req ? ctx.req.headers.cookie : null;
   if (whitelist.indexOf(wildcard) === -1) {
-    const res = await getShop(wildcard);
+    const res = await getShop(cookie, wildcard);
     if (res.success) {
       return { props: { ...res } };
     } else {
@@ -43,7 +44,6 @@ export const getServerSideProps = async (ctx: any) => {
       };
     }
   } else {
-    const cookie = ctx.req ? ctx.req.headers.cookie : null;
     const res = await checkLogin(cookie, true);
     return { props: { ...res } };
   }

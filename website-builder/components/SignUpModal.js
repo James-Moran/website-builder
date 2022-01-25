@@ -19,6 +19,7 @@ const SignUpModal = ({ isOpen, setIsOpen, callback }) => {
     await login(emailLogin, passwordLogin)
       .then((res) => {
         if (res.success === true) {
+          console.log("here");
           setUser({ loggedIn: true });
           setIsOpen(false);
         }

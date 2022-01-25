@@ -22,7 +22,6 @@ router.get(
   "/myshop",
   passport.authenticate("jwt", { session: false }),
   function (req, res, next) {
-    console.log("here");
     Shop.findOne({ userid: req.user._id })
       .then((shop) => {
         if (shop == null) {
@@ -41,10 +40,7 @@ router.post(
   "/myshop",
   passport.authenticate("jwt", { session: false }),
   function (req, res, next) {
-    console.log("here");
     const filter = { userid: req.user._id };
-
-    console.log(req.body);
 
     const update = {
       ...req.body,

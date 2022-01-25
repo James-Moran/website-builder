@@ -59,17 +59,17 @@ export default function Create({ shop }: { shop: any }) {
       <Toaster position="bottom-center" />
       <div className="max-w-4xl w-full flex flex-col">
         <div className="fixed bottom-0 right-8">
-          <div className="flex flex-row">
+          <div className="flex flex-row mb-4 mr-14">
             <button
               type="button"
-              className="inline mx-2 justify-center px-4 py-2 text-sm font-medium text-white bg-black border border-transparent rounded-md hover:bg-gray-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-red-500 disabled:bg-gray-600 max-w-fit"
+              className="inline-flex mx-2 justify-center px-4 py-2 text-sm font-medium text-white bg-black border border-transparent rounded-md hover:bg-gray-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-red-500 disabled:bg-gray-600 max-w-fit"
               onClick={handleSave}
             >
               Save
             </button>
             <button
               type="button"
-              className="inline justify-center px-4 py-2 my-4 text-sm font-medium text-white bg-black border border-transparent rounded-md hover:bg-gray-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-red-500 disabled:bg-gray-600 max-w-fit"
+              className="inline-flex justify-center px-4 py-2 text-sm font-medium text-white bg-black border border-transparent rounded-md hover:bg-gray-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-red-500 disabled:bg-gray-600 max-w-fit"
               onClick={() => setSettingsOpen(true)}
             >
               Settings
@@ -98,18 +98,6 @@ export default function Create({ shop }: { shop: any }) {
           />
 
           {state.items.map((product: any, idx: number) => {
-            if (!product.imageSrc) {
-              setState({
-                ...state,
-                items: state.items.map((item: any, id: number) => {
-                  if (id !== idx) {
-                    return item;
-                  } else {
-                    return { ...item, imageSrc: "https://unsplash.it/280/200" };
-                  }
-                }),
-              });
-            }
             return (
               <div key={idx} className="group flex flex-col items-center">
                 <div className="relative">

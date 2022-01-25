@@ -1,5 +1,12 @@
 export const localUrl = "http://localhost:8000";
-export const externalUrl = "https://onepagesite.co";
+export const externalUrl =
+  process.env.ENV === "prod"
+    ? "https://onepagesite.co"
+    : "http://localhost:3000";
+export const databaseUrl =
+  process.env.ENV === "prod"
+    ? "https://onepagesite.co"
+    : "http://localhost:8000";
 
 export const getMyShop = async (cookie, local) => {
   const config = {
@@ -10,25 +17,22 @@ export const getMyShop = async (cookie, local) => {
     },
   };
 
-  return (res = await fetch(
-    (local ? localUrl : externalUrl) + "/shops/myshop",
-    {
-      method: "GET",
-      credentials: "include",
-      ...config,
-    }
-  )
+  return await fetch((local ? localUrl : databaseUrl) + "/shops/myshop", {
+    method: "GET",
+    credentials: "include",
+    ...config,
+  })
     .then(async (res) => await res.json())
     .then((res) => {
       return { success: true, shop: res.shop };
     })
     .catch((err) => {
       return { success: false, shop: null };
-    }));
+    });
 };
 
 export const postMyShop = async (state) => {
-  await fetch(externalUrl + "/api/shops/myshop", {
+  await fetch(databaseUrl + "/shops/myshop", {
     method: "POST",
     credentials: "include",
     headers: {
@@ -43,11 +47,11 @@ export const postMyShop = async (state) => {
     });
 };
 
-export const getShop = async (wildcard) => {
-  return await fetch(externalUrl + "/shops/name/" + wildcard, {
+export const getShop = async (cookie, wildcard) => {
+  return await fetch(databaseUrl + "/shops/name/" + wildcard, {
     method: "GET",
     headers: {
-      cookie: ctx.req.headers.cookie ?? null,
+      cookie: cookie,
       Accept: "application/json",
       "Content-Type": "application/json",
     },
@@ -65,7 +69,7 @@ export const getShop = async (wildcard) => {
     });
 };
 
-export const checkLogin = (cookie, local) => {
+export const checkLogin = async (cookie, local) => {
   const config = {
     headers: {
       cookie: cookie,
@@ -73,7 +77,7 @@ export const checkLogin = (cookie, local) => {
       "Content-Type": "application/json",
     },
   };
-  return await fetch((local ? localUrl : externalUrl) + "/users/checklogin", {
+  return await fetch((local ? localUrl : databaseUrl) + "/users/checklogin", {
     method: "GET",
     credentials: "include",
     ...config,
@@ -92,7 +96,7 @@ export const checkLogin = (cookie, local) => {
 };
 
 export const logout = async () => {
-  return await fetch(externalUrl + "/users/logout", {
+  return await fetch(databaseUrl + "/users/logout", {
     method: "GET",
     credentials: "include",
     headers: {
@@ -110,7 +114,7 @@ export const logout = async () => {
 };
 
 export const login = async (email, password) => {
-  return await fetch(externalUrl + "/users/login", {
+  return await fetch(databaseUrl + "/users/login", {
     method: "POST",
     credentials: "include",
     headers: {
@@ -129,7 +133,7 @@ export const login = async (email, password) => {
 };
 
 export const register = async (email, password) => {
-  return await fetch(externalUrl + "/users/register", {
+  return await fetch(databaseUrl + "/users/register", {
     method: "POST",
     credentials: "include",
     headers: {

@@ -3,6 +3,7 @@ import { Dialog, Transition } from "@headlessui/react";
 import Router from "next/router";
 import { useUser } from "./UserContext";
 import toast from "react-hot-toast";
+import { logout } from "../api-lib/endpoints";
 
 const SettingsModal = ({
   isOpen,
@@ -37,18 +38,7 @@ const SettingsModal = ({
     setLoginOpen(true);
   };
 
-  const handleLoadSave = async () => {
-    await fetch("http://localhost:8000/shops/name/" + state.url, {
-      method: "GET",
-      headers: {
-        cookie: ctx.req.headers.cookie ?? null,
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-    })
-      .then((res) => res.json())
-      .then((res) => setState(res.shop));
-  };
+  const handleLoadSave = async () => {};
 
   return (
     <Transition appear show={isOpen} as={Fragment}>
@@ -135,22 +125,13 @@ const SettingsModal = ({
                   Close
                 </button>
                 {user.loggedIn ? (
-                  <div>
-                    <button
-                      type="button"
-                      className="inline-flex mx-2 justify-center px-4 py-2 text-sm font-medium text-white bg-black border border-transparent rounded-md hover:bg-gray-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-red-500 disabled:bg-gray-600 max-w-fit"
-                      onClick={handleLoadSave}
-                    >
-                      Load Save
-                    </button>
-                    <button
-                      type="button"
-                      className="inline-flex justify-center px-4 py-2 my-4 text-sm font-medium text-white bg-black border border-transparent rounded-md hover:bg-gray-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-red-500 disabled:bg-gray-600 max-w-fit"
-                      onClick={handleLogout}
-                    >
-                      Log Out
-                    </button>
-                  </div>
+                  <button
+                    type="button"
+                    className="inline-flex justify-center px-4 py-2 my-4 text-sm font-medium text-white bg-black border border-transparent rounded-md hover:bg-gray-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-red-500 disabled:bg-gray-600 max-w-fit"
+                    onClick={handleLogout}
+                  >
+                    Log Out
+                  </button>
                 ) : (
                   <button
                     type="button"

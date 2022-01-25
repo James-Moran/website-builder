@@ -11,7 +11,7 @@ export default function Navbar({ title }) {
   const [user, setUser] = useUser();
   const [isOpen, setIsOpen] = useState(false);
 
-  const logoutWrapper = () => {
+  const logoutWrapper = async () => {
     const res = await logout(setUser)
       .then((res) => {
         if (res.success) {
