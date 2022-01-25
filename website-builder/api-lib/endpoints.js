@@ -1,12 +1,16 @@
 export const localUrl = "http://localhost:8000";
 export const externalUrl =
-  process.env.ENV === "prod"
-    ? "https://onepagesite.co"
+  process.env.NEXT_PUBLIC_ENV === "prod"
+    ? "https://onepageshop.co"
     : "http://localhost:3000";
 export const databaseUrl =
-  process.env.ENV === "prod"
-    ? "https://onepagesite.co"
+  process.env.NEXT_PUBLIC_ENV === "prod"
+    ? "https://onepageshop.co/api"
     : "http://localhost:8000";
+
+console.log("databaseURL");
+console.log(databaseUrl);
+console.log(process.env.NEXT_PUBLIC_ENV);
 
 export const getMyShop = async (cookie, local) => {
   const config = {
@@ -32,6 +36,7 @@ export const getMyShop = async (cookie, local) => {
 };
 
 export const postMyShop = async (state) => {
+  console.log(databaseUrl + "/shops/myshop");
   await fetch(databaseUrl + "/shops/myshop", {
     method: "POST",
     credentials: "include",
