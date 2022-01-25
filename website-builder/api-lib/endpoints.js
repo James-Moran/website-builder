@@ -1,12 +1,12 @@
 export const internalUrl = "http://localhost:8000/api";
 export const externalUrl =
-  process.env.NEXT_PUBLIC_ENV === "prod"
-    ? "https://onepageshop.co"
-    : "http://localhost:3000";
+  process.env.NEXT_PUBLIC_ENV === "dev"
+    ? "http://localhost:3000"
+    : "https://onepageshop.co";
 export const databaseUrl =
-  process.env.NEXT_PUBLIC_ENV === "prod"
-    ? "https://onepageshop.co/api"
-    : "http://localhost:8000/api";
+  process.env.NEXT_PUBLIC_ENV === "dev"
+    ? "http://localhost:8000/api"
+    : "https://onepageshop.co/api";
 
 console.log("databaseURL");
 console.log(databaseUrl);
