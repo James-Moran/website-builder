@@ -1,4 +1,4 @@
-export const localUrl = "http://localhost:8000";
+export const internalUrl = "http://localhost:8000/api";
 export const externalUrl =
   process.env.NEXT_PUBLIC_ENV === "prod"
     ? "https://onepageshop.co"
@@ -6,13 +6,13 @@ export const externalUrl =
 export const databaseUrl =
   process.env.NEXT_PUBLIC_ENV === "prod"
     ? "https://onepageshop.co/api"
-    : "http://localhost:8000";
+    : "http://localhost:8000/api";
 
 console.log("databaseURL");
 console.log(databaseUrl);
 console.log(process.env.NEXT_PUBLIC_ENV);
 
-export const getMyShop = async (cookie, local) => {
+export const getMyShop = async (cookie, internal) => {
   const config = {
     headers: {
       cookie: cookie ?? null,
@@ -21,7 +21,7 @@ export const getMyShop = async (cookie, local) => {
     },
   };
 
-  return await fetch((local ? localUrl : databaseUrl) + "/shops/myshop", {
+  return await fetch((internal ? internalUrl : databaseUrl) + "/shops/myshop", {
     method: "GET",
     credentials: "include",
     ...config,
@@ -74,7 +74,7 @@ export const getShop = async (cookie, wildcard) => {
     });
 };
 
-export const checkLogin = async (cookie, local) => {
+export const checkLogin = async (cookie, internal) => {
   const config = {
     headers: {
       cookie: cookie,
@@ -82,11 +82,14 @@ export const checkLogin = async (cookie, local) => {
       "Content-Type": "application/json",
     },
   };
-  return await fetch((local ? localUrl : databaseUrl) + "/users/checklogin", {
-    method: "GET",
-    credentials: "include",
-    ...config,
-  })
+  return await fetch(
+    (internal ? internalUrl : databaseUrl) + "/users/checklogin",
+    {
+      method: "GET",
+      credentials: "include",
+      ...config,
+    }
+  )
     .then((res) => res.json())
     .then((res) => {
       if (res.success) {
@@ -150,4 +153,17 @@ export const register = async (email, password) => {
       password: password,
     }),
   }).then((res) => res.json());
+};
+
+export const uploadImage = async (image) => {
+  const formData = new FormData();
+  formData.append("image", image);
+  return await fetch(databaseUrl + "/images/upload", {
+    method: "POST",
+    body: formData,
+  })
+    .then((res) => res.json())
+    .catch((err) => {
+      return { success: false };
+    });
 };

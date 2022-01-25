@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useUser } from "../components/UserContext";
 
-import { getMyShop, postMyShop } from "../api-lib/endpoints";
+import { getMyShop, postMyShop, uploadImage } from "../api-lib/endpoints";
 
 import SettingsModal from "../components/SettingsModal";
 import toast, { Toaster } from "react-hot-toast";
@@ -10,7 +10,8 @@ import SignUpModal from "../components/SignUpModal";
 const initalItem = {
   title: "",
   price: "",
-  imageSrc: "https://unsplash.it/280/200",
+  imageSrc:
+    "https://jm361websitebuilder.s3.eu-west-2.amazonaws.com/0f2694c5adb1c7d4464e796f25277fc0",
 };
 
 const inital = {
@@ -51,6 +52,26 @@ export default function Create({ shop }: { shop: any }) {
   const handleAddItem = () => {
     setState({ ...state, items: [...state.items, initalItem] });
   };
+
+  async function handleUploadImage(image: any, idx: number) {
+    await uploadImage(image).then((res) => {
+      if (res.success) {
+        setState({
+          ...state,
+          items: state.items.map((item: any, id: number) => {
+            if (id !== idx) {
+              return item;
+            } else {
+              return {
+                ...item,
+                imageSrc: res.location,
+              };
+            }
+          }),
+        });
+      }
+    });
+  }
 
   return (
     <div
@@ -103,36 +124,24 @@ export default function Create({ shop }: { shop: any }) {
                 <div className="relative">
                   <img
                     width={280}
-                    height={200}
                     className="border-2 border-black rounded"
                     src={product.imageSrc}
                   />
-                  <label className=" cursor-pointer justify-center font-bold px-4 py-2 text-sm text-white bg-black  rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-red-500 disabled:bg-gray-600 max-w-fit absolute bottom-1 left-1 hidden group-hover:block">
-                    <span className="">Change Image</span>
-                    <input
-                      type="file"
-                      accept="image/*"
-                      className="hidden"
-                      onChange={(ev) => {
-                        const upload = ev.target.files;
-                        if (upload) {
-                          setState({
-                            ...state,
-                            items: state.items.map((item: any, id: number) => {
-                              if (id !== idx) {
-                                return item;
-                              } else {
-                                return {
-                                  ...item,
-                                  imageSrc: URL.createObjectURL(upload[0]),
-                                };
-                              }
-                            }),
-                          });
-                        }
-                      }}
-                    />
-                  </label>
+                  <form>
+                    <label className="cursor-pointer justify-center font-bold px-4 py-2 text-sm text-white bg-black  rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-red-500 disabled:bg-gray-600 max-w-fit absolute bottom-1 left-1 hidden group-hover:block">
+                      <span className="">Change Image</span>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={async (ev) => {
+                          if (ev.target.files && ev.target.files[0]) {
+                            handleUploadImage(ev.target.files[0], idx);
+                          }
+                        }}
+                      />
+                    </label>
+                  </form>
 
                   <button
                     className="justify-center font-bold px-4 py-2 text-sm text-white bg-black rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-red-500 disabled:bg-gray-600 max-w-fit absolute top-1 left-1 hidden group-hover:block"
@@ -202,7 +211,7 @@ export default function Create({ shop }: { shop: any }) {
       <SignUpModal
         isOpen={loginOpen}
         setIsOpen={setLoginOpen}
-        callback={() => postMyShop(state)}
+        callback={handleSave}
       />
       <SettingsModal
         isOpen={settingsOpen}
