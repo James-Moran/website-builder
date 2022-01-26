@@ -101,7 +101,7 @@ export default function Create({ shop, loggedIn }: any) {
     >
       <Toaster position="bottom-center" />
       <div className="max-w-4xl w-full flex flex-col">
-        <div className="fixed top-2 left-1 md:bottom-0 md:right-8">
+        <div className="fixed top-2 left-1 md:top-8 md:left-8">
           <div className="flex flex-row mb-4 mr-14 z-50">
             <button
               type="button"
