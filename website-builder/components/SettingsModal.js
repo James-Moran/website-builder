@@ -15,7 +15,9 @@ const SettingsModal = ({
   const [user, setUser] = useUser();
 
   const handleURLChange = (e) => {
-    setState({ ...state, url: e.target.value });
+    const newUrl = e.target.value.toLowerCase().replace(/[^a-z]/gm, "");
+    console.log(newUrl);
+    setState({ ...state, url: newUrl });
   };
 
   const setColor = (color) => {
@@ -73,15 +75,20 @@ const SettingsModal = ({
             <div className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl border-black border-2">
               <div className="mt-2">
                 <h3 className="text-md font-medium leading-6 text-gray-900 pb-1 pt-1">
-                  URL
+                  Shop Link
                 </h3>
-                <input
-                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight"
-                  id="url"
-                  type="text"
-                  value={state.url}
-                  onChange={handleURLChange}
-                />
+                <div className="flex flex-row border rounded text-gray-700 leading-tight">
+                  <input
+                    className="shadow appearance-none   w-full py-2 px-3 "
+                    id="url"
+                    type="text"
+                    maxLength={15}
+                    value={state.url}
+                    placeholder="Your link"
+                    onChange={handleURLChange}
+                  />
+                  <p className="font-bold py-2 px-3">.onepageshop.co</p>
+                </div>
               </div>
 
               <h3 className="text-md font-medium leading-6 text-gray-900 pb-1 pt-1 mt-2">
