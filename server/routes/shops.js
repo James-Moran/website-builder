@@ -34,12 +34,20 @@ router.get(
   }
 );
 
+const restrictedUrls = new Set(["www"]);
+
 router.post(
   "/myshop",
   passport.authenticate("jwt", { session: false }),
   function (req, res, next) {
     console.log(req.body.url);
     req.body.url = req.body.url.toLowerCase();
+    if (restrictedUrls.has(req.body.url)) {
+      res.json({
+        success: false,
+        msg: "Cannot use this url",
+      });
+    }
 
     const filter = { userid: req.user._id };
     const update = {
