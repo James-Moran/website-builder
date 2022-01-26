@@ -1,7 +1,6 @@
 export default function Shop({ shop }) {
-  console.log(shop);
   return (
-    <div
+    <body
       className={`flex flex-col items-center min-h-screen font-serif p-4 text-lg ${shop.color}`}
     >
       <div className="max-w-4xl w-full flex flex-col">
@@ -34,6 +33,6 @@ export default function Shop({ shop }) {
           })}
         </div>
       </div>
-    </div>
+    </body>
   );
 }
