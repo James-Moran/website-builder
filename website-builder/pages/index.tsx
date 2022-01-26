@@ -29,7 +29,7 @@ export default function Index({
 
 export const getServerSideProps = async (ctx: any) => {
   const wildcard = ctx.req.headers.host.split(".")[0];
-  const whitelist = ["onepageshop", "localhost:3000"];
+  const whitelist = ["onepageshop", "localhost:3000", "192"];
   const cookie = ctx.req ? ctx.req.headers.cookie : null;
   if (whitelist.indexOf(wildcard) === -1) {
     const res = await getShop(cookie, wildcard);

@@ -101,8 +101,8 @@ export default function Create({ shop, loggedIn }: any) {
     >
       <Toaster position="bottom-center" />
       <div className="max-w-4xl w-full flex flex-col">
-        <div className="fixed bottom-0 right-8">
-          <div className="flex flex-row mb-4 mr-14">
+        <div className="fixed top-2 left-1 md:bottom-0 md:right-8">
+          <div className="flex flex-row mb-4 mr-14 z-50">
             <button
               type="button"
               className="inline-flex mx-2 justify-center px-4 py-2 text-sm font-medium text-white bg-black border border-transparent rounded-md hover:bg-gray-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-red-500 disabled:bg-gray-600 max-w-fit"
@@ -252,7 +252,7 @@ export default function Create({ shop, loggedIn }: any) {
 
 export const getServerSideProps = async (ctx: any) => {
   const wildcard = ctx.req.headers.host.split(".")[0];
-  const whitelist = ["onepageshop", "localhost:3000"];
+  const whitelist = ["onepageshop", "localhost:3000", "192"];
   if (whitelist.indexOf(wildcard) === -1) {
     return {
       redirect: {
