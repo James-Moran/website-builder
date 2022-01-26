@@ -250,9 +250,18 @@ export default function Create({ shop, loggedIn }: any) {
   );
 }
 
-export const getServerSideProps = async (ctx: {
-  req: { headers: { cookie: any } };
-}) => {
+export const getServerSideProps = async (ctx: any) => {
+  const wildcard = ctx.req.headers.host.split(".")[0];
+  const whitelist = ["onepageshop", "localhost:3000"];
+  if (whitelist.indexOf(wildcard) === -1) {
+    return {
+      redirect: {
+        permanent: false,
+        destination: "/",
+      },
+    };
+  }
+
   const cookie = ctx.req.headers.cookie;
   const { success, shop, loggedIn } = await getMyShop(cookie, true);
   return { props: { shop, loggedIn } };
