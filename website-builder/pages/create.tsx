@@ -36,21 +36,36 @@ export default function Create({ shop, loggedIn }: any) {
     }
   }, []);
 
+  const loginToast = async () => {
+    toast.promise(
+      postMyShop(state).then((res) => {
+        console.log(res);
+        if (res.success) {
+          return Promise.resolve();
+        } else {
+          if (res.msg) {
+            return Promise.reject(res.msg);
+          } else {
+            return Promise.reject("Could not save");
+          }
+        }
+      }),
+      {
+        loading: "Saving",
+        error: (err) => err,
+        success: "Saved!",
+      },
+      {
+        success: {
+          icon: "🔨",
+        },
+      }
+    );
+  };
+
   const handleSave = async () => {
     if (user.loggedIn) {
-      toast.promise(
-        postMyShop(state),
-        {
-          loading: "Saving",
-          error: "Could not save",
-          success: "Saved!",
-        },
-        {
-          success: {
-            icon: "🔨",
-          },
-        }
-      );
+      await loginToast();
     } else {
       setLoginOpen(true);
     }
@@ -219,7 +234,10 @@ export default function Create({ shop, loggedIn }: any) {
       <SignUpModal
         isOpen={loginOpen}
         setIsOpen={setLoginOpen}
-        callback={() => postMyShop(state)}
+        callback={async () => {
+          console.log("here");
+          await loginToast();
+        }}
       />
       <SettingsModal
         isOpen={settingsOpen}

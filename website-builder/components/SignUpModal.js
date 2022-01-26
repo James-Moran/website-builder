@@ -15,35 +15,27 @@ const SignUpModal = ({ isOpen, setIsOpen, callback }) => {
   const [passwordRegister, setPasswordRegister] = useState("");
   const [confirmRegister, setConfirmRegister] = useState("");
 
-  const loginWrapper = async () => {
-    await login(emailLogin, passwordLogin)
-      .then((res) => {
-        console.log(res);
-        if (res.success === true) {
-          setUser({ loggedIn: true });
-          setIsOpen(false);
-        } else {
-          return Promise.reject({ message: "Wrong password" });
-        }
-      })
-      .then(() => {
-        if (callback) {
-          callback();
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-        if (err.message) {
-          return Promise.reject(err.message);
-        } else {
-          return Promise.reject("Problem logging in");
-        }
-      });
-  };
-
   const handleLogin = async () => {
     toast.promise(
-      loginWrapper(),
+      login(emailLogin, passwordLogin)
+        .then((res) => {
+          if (res.success) {
+            setUser({ loggedIn: true });
+            setIsOpen(false);
+          } else {
+            if (res.msg) {
+              return Promise.reject(res.msg);
+            } else {
+              return Promise.reject("Error Logging in");
+            }
+          }
+        })
+        .then(() => {
+          if (callback) {
+            callback();
+          }
+          return Promise.resolve();
+        }),
       {
         loading: "Logging In",
         error: (err) => err,
@@ -57,31 +49,28 @@ const SignUpModal = ({ isOpen, setIsOpen, callback }) => {
     );
   };
 
-  const registerWrapper = async () => {
-    await register(emailRegister, passwordRegister)
-      .then((res) => {
-        if (res.success === true) {
-          setUser({ loggedIn: true });
-          setIsOpen(false);
-        } else {
-          return Promise.reject({ message: "Email already registered" });
-        }
-      })
-      .then(() => {
-        if (callback) {
-          callback();
-        }
-      })
-      .catch((err) => {
-        if (err.message) {
-          return Promise.reject(err.message);
-        } else return Promise.reject("Problem with signup");
-      });
-  };
-
   const handleRegister = async () => {
     toast.promise(
-      registerWrapper(),
+      register(emailRegister, passwordRegister)
+        .then((res) => {
+          if (res.success === true) {
+            setUser({ loggedIn: true });
+            setIsOpen(false);
+            return Promise.resolve();
+          } else {
+            if (res.msg) {
+              return Promise.reject({ message: "Email already registered" });
+            } else {
+              return Promise.reject("Problem with signup");
+            }
+          }
+        })
+        .then(() => {
+          if (callback) {
+            callback();
+          }
+          return Promise.resolve();
+        }),
       {
         loading: "Registering",
         error: (err) => err,

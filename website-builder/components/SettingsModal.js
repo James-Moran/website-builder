@@ -23,22 +23,16 @@ const SettingsModal = ({
   };
 
   const handleLogout = async () => {
-    await logout(setUser)
-      .then((res) => {
-        if (res.success) {
-          setUser({ loggedIn: false });
-          Router.push("/");
-        }
-      })
-      .catch((err) => console.log("Problem logging out"));
+    await logout(setUser).then((res) => {
+      setUser({ loggedIn: false });
+      Router.push("/");
+    });
   };
 
   const handleLogin = async () => {
     setIsOpen(false);
     setLoginOpen(true);
   };
-
-  const handleLoadSave = async () => {};
 
   return (
     <Transition appear show={isOpen} as={Fragment}>

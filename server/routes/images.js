@@ -11,7 +11,14 @@ const unlinkFile = util.promisify(fs.unlink);
 router.post("/upload", upload.single("image"), async (req, res, next) => {
   await uploadFile(req.file)
     .then((result) => res.send({ success: true, location: result.Location }))
-    .finally(() => unlinkFile(req.file.path));
+    .then(() => {
+      unlinkFile(req.file.path);
+    })
+    .catch((err) => {
+      console.log(err);
+      unlinkFile(req.file.path);
+      res.send({ success: false });
+    });
 });
 
 module.exports = router;

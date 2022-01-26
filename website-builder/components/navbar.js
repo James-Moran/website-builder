@@ -11,19 +11,16 @@ export default function Navbar({ title }) {
   const [user, setUser] = useUser();
   const [isOpen, setIsOpen] = useState(false);
 
-  const logoutWrapper = async () => {
-    const res = await logout(setUser)
-      .then((res) => {
-        if (res.success) {
-          setUser({ loggedIn: false });
-        }
-      })
-      .catch((err) => console.log("Problem logging out"));
-  };
-
   const handleLogout = async () => {
     toast.promise(
-      logoutWrapper(),
+      logout(setUser).then((res) => {
+        setUser({ loggedIn: false });
+        if (res.success) {
+          return Promise.resolve();
+        } else {
+          return Promise.reject();
+        }
+      }),
       {
         loading: "Logging Out",
         error: "Problem Logging Out",

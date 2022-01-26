@@ -28,7 +28,7 @@ export const getMyShop = async (cookie, internal) => {
   })
     .then(async (res) => await res.json())
     .then((res) => {
-      return { success: true, shop: res.shop, loggedIn: true };
+      return { success: res.success, shop: res.shop, loggedIn: true };
     })
     .catch((err) => {
       return { success: false, shop: null, loggedIn: false };
@@ -36,7 +36,7 @@ export const getMyShop = async (cookie, internal) => {
 };
 
 export const postMyShop = async (state) => {
-  await fetch(databaseUrl + "/shops/myshop", {
+  return await fetch(databaseUrl + "/shops/myshop", {
     method: "POST",
     credentials: "include",
     headers: {
@@ -47,7 +47,7 @@ export const postMyShop = async (state) => {
   })
     .then((res) => res.json())
     .catch((err) => {
-      console.log("Error saving shop");
+      return { success: false };
     });
 };
 
@@ -90,13 +90,6 @@ export const checkLogin = async (cookie, internal) => {
     }
   )
     .then((res) => res.json())
-    .then((res) => {
-      if (res.success) {
-        return { success: true, user: res.user };
-      } else {
-        return { success: true, user: null };
-      }
-    })
     .catch((err) => {
       return { success: false, user: null };
     });
@@ -137,7 +130,7 @@ export const login = async (email, password) => {
       return res.json();
     })
     .catch((err) => {
-      return Promise.reject(err);
+      return { success: false };
     });
 };
 
@@ -157,7 +150,7 @@ export const register = async (email, password) => {
     .then((res) => res.json())
     .catch((err) => {
       console.log(err);
-      return Promise.reject(err);
+      return { success: false };
     });
 };
 
