@@ -18,10 +18,12 @@ const SignUpModal = ({ isOpen, setIsOpen, callback }) => {
   const loginWrapper = async () => {
     await login(emailLogin, passwordLogin)
       .then((res) => {
+        console.log(res);
         if (res.success === true) {
           setUser({ loggedIn: true });
-          console.log("closing");
           setIsOpen(false);
+        } else {
+          return Promise.reject({ message: "Wrong password" });
         }
       })
       .then(() => {
@@ -30,7 +32,12 @@ const SignUpModal = ({ isOpen, setIsOpen, callback }) => {
         }
       })
       .catch((err) => {
-        console.log("Error logging in");
+        console.log(err);
+        if (err.message) {
+          return Promise.reject(err.message);
+        } else {
+          return Promise.reject("Problem logging in");
+        }
       });
   };
 
@@ -39,7 +46,7 @@ const SignUpModal = ({ isOpen, setIsOpen, callback }) => {
       loginWrapper(),
       {
         loading: "Logging In",
-        error: "Error Logging In",
+        error: (err) => err,
         success: "Welcome Back",
       },
       {
@@ -56,6 +63,8 @@ const SignUpModal = ({ isOpen, setIsOpen, callback }) => {
         if (res.success === true) {
           setUser({ loggedIn: true });
           setIsOpen(false);
+        } else {
+          return Promise.reject({ message: "Email already registered" });
         }
       })
       .then(() => {
@@ -64,7 +73,9 @@ const SignUpModal = ({ isOpen, setIsOpen, callback }) => {
         }
       })
       .catch((err) => {
-        console.log("Problem registering");
+        if (err.message) {
+          return Promise.reject(err.message);
+        } else return Promise.reject("Problem with signup");
       });
   };
 
@@ -73,7 +84,7 @@ const SignUpModal = ({ isOpen, setIsOpen, callback }) => {
       registerWrapper(),
       {
         loading: "Registering",
-        error: "Problem Registering",
+        error: (err) => err,
         success: "Welcome",
       },
       {

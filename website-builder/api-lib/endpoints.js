@@ -36,7 +36,6 @@ export const getMyShop = async (cookie, internal) => {
 };
 
 export const postMyShop = async (state) => {
-  console.log(databaseUrl + "/shops/myshop");
   await fetch(databaseUrl + "/shops/myshop", {
     method: "POST",
     credentials: "include",
@@ -130,13 +129,15 @@ export const login = async (email, password) => {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      username: email,
+      email: email,
       password: password,
     }),
   })
-    .then((res) => res.json())
+    .then((res) => {
+      return res.json();
+    })
     .catch((err) => {
-      return { success: false };
+      return Promise.reject(err);
     });
 };
 
@@ -149,10 +150,15 @@ export const register = async (email, password) => {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      username: email,
+      email: email,
       password: password,
     }),
-  }).then((res) => res.json());
+  })
+    .then((res) => res.json())
+    .catch((err) => {
+      console.log(err);
+      return Promise.reject(err);
+    });
 };
 
 export const uploadImage = async (image) => {
