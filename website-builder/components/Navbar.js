@@ -38,7 +38,7 @@ export default function Navbar({ title }) {
   };
 
   return (
-    <header className="flex items-center justify-between pb-4 border-black border-b-4 mb-4 mt-2">
+    <header className="flex items-center justify-between pb-4 mb-4 mt-2">
       <h1 className="text-xl md:text-4xl font-bold">{title}</h1>
       <nav>
         <ul className="flex flex-row justify-end">

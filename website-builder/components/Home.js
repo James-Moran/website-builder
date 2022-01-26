@@ -18,20 +18,23 @@ export default function Home() {
   };
 
   return (
-    <div className="flex flex-col items-center min-h-screen font-serif p-4 text-lg">
+    <div className="flex flex-col items-center min-h-screen font-serif p-4 text-lg bg-amber-300">
       <Toaster position="bottom-center" />
-      <div className="max-w-4xl w-full">
-        <Navbar title="Website Builder" />
-        <main>
-          <h2 className="text-2xl font-bold mb-4"></h2>
+      <div className="max-w-4xl w-full flex flex-col flex-1">
+        <Navbar title="OnePageShop" />
+        <main className="flex flex-col flex-1 justify-center">
+          <h2 className="text-3xl md:text-6xl font-bold mb-4 w-8/12 md:w-10/12">
+            Create the perfect home for your store
+          </h2>
+          <button
+            type="button"
+            className="inline-flex justify-center px-4 py-2 my-4 text-xl font-medium text-white bg-black border border-transparent rounded-md hover:bg-gray-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-red-500 disabled:bg-gray-600 max-w-fit"
+            onClick={() => {}}
+          >
+            Get Started
+          </button>
         </main>
-        <button
-          type="button"
-          className="inline-flex justify-center px-4 py-2 my-4 text-sm font-medium text-white bg-black border border-transparent rounded-md hover:bg-gray-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-red-500 disabled:bg-gray-600"
-          onClick={handleProtected}
-        >
-          Check Login
-        </button>
+        <div className="flex flex-col flex-1"></div>
       </div>
     </div>
   );
