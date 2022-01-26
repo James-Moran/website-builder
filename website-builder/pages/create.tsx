@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useUser } from "../components/UserContext";
 
 import { getMyShop, postMyShop, uploadImage } from "../api-lib/endpoints";
@@ -8,6 +8,7 @@ import toast, { Toaster } from "react-hot-toast";
 import SignUpModal from "../components/SignUpModal";
 
 const initalItem = {
+  type: "basic",
   title: "",
   price: "",
   imageSrc: "https://unsplash.it/280/200",
@@ -21,12 +22,19 @@ const inital = {
   color: "bg-white",
 };
 
-export default function Create({ shop }: { shop: any }) {
+export default function Create({ shop, loggedIn }: any) {
   const [user, setUser] = useUser();
   const [state, setState] = useState(shop ?? inital);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [loginOpen, setLoginOpen] = useState(false);
-  console.log(state);
+
+  console.log(user, loggedIn, shop);
+
+  useEffect(() => {
+    if (!user.loggedIn && loggedIn) {
+      setUser({ loggedIn: true });
+    }
+  }, []);
 
   const handleSave = async () => {
     if (user.loggedIn) {
@@ -228,5 +236,6 @@ export const getServerSideProps = async (ctx: {
   req: { headers: { cookie: any } };
 }) => {
   const cookie = ctx.req.headers.cookie;
-  return { props: await getMyShop(cookie, true) };
+  const { success, shop, loggedIn } = await getMyShop(cookie, true);
+  return { props: { shop, loggedIn } };
 };

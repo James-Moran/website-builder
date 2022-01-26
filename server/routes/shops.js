@@ -24,11 +24,7 @@ router.get(
   function (req, res, next) {
     Shop.findOne({ userid: req.user._id })
       .then((shop) => {
-        if (shop == null) {
-          res.json({ success: false, err: `Could not find shop ${shopname}` });
-        } else {
-          res.json({ success: true, shop });
-        }
+        res.json({ success: true, shop });
       })
       .catch((err) => {
         next(err);

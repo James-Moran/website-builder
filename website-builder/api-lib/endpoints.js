@@ -28,10 +28,10 @@ export const getMyShop = async (cookie, internal) => {
   })
     .then(async (res) => await res.json())
     .then((res) => {
-      return { success: true, shop: res.shop };
+      return { success: true, shop: res.shop, loggedIn: true };
     })
     .catch((err) => {
-      return { success: false, shop: null };
+      return { success: false, shop: null, loggedIn: false };
     });
 };
 
