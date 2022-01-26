@@ -96,7 +96,7 @@ export default function Create({ shop, loggedIn }: any) {
   }
 
   return (
-    <div
+    <body
       className={`flex flex-col items-center min-h-screen font-serif p-4 text-lg ${state.color}`}
     >
       <Toaster position="bottom-center" />
@@ -246,7 +246,7 @@ export default function Create({ shop, loggedIn }: any) {
         setState={setState}
         setLoginOpen={setLoginOpen}
       />
-    </div>
+    </body>
   );
 }
 
