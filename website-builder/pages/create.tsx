@@ -82,28 +82,49 @@ export default function Create({ shop, loggedIn }: any) {
   };
 
   async function handleUploadImage(image: any, idx: number) {
-    try {
-      const res = await uploadImageUrl();
-      if (res.success) {
-        await uploadImageS3(res.url, image);
-        const imageUrl = res.url.split("?")[0];
-        setState({
-          ...state,
-          items: state.items.map((item: any, id: number) => {
-            if (id !== idx) {
-              return item;
-            } else {
-              return {
-                ...item,
-                imageSrc: imageUrl,
-              };
-            }
-          }),
-        });
+    toast.promise(
+      uploadImageUrl()
+        .then((result) => {
+          if (result.success) {
+            uploadImageS3(result.url, image)
+              .then((res) => {
+                const imageUrl = result.url.split("?")[0];
+                setState({
+                  ...state,
+                  items: state.items.map((item: any, id: number) => {
+                    if (id !== idx) {
+                      return item;
+                    } else {
+                      return {
+                        ...item,
+                        imageSrc: imageUrl,
+                      };
+                    }
+                  }),
+                });
+                Promise.resolve();
+              })
+              .catch((err) => {
+                Promise.reject();
+              });
+          } else {
+            Promise.reject();
+          }
+        })
+        .catch((err) => {
+          Promise.reject();
+        }),
+      {
+        loading: "Uploading Image",
+        error: "Error Uploading Image",
+        success: "Uploaded!",
+      },
+      {
+        success: {
+          icon: "🔨",
+        },
       }
-    } catch {
-      console.log("error uploading");
-    }
+    );
   }
 
   return (
