@@ -1,7 +1,13 @@
 import { useEffect, useState } from "react";
 import { useUser } from "../components/UserContext";
 
-import { getMyShop, postMyShop, uploadImage } from "../api-lib/endpoints";
+import {
+  getMyShop,
+  postMyShop,
+  uploadImage,
+  uploadImageS3,
+  uploadImageUrl,
+} from "../api-lib/endpoints";
 
 import SettingsModal from "../components/SettingsModal";
 import toast, { Toaster } from "react-hot-toast";
@@ -76,8 +82,11 @@ export default function Create({ shop, loggedIn }: any) {
   };
 
   async function handleUploadImage(image: any, idx: number) {
-    await uploadImage(image).then((res) => {
+    try {
+      const res = await uploadImageUrl();
       if (res.success) {
+        await uploadImageS3(res.url, image);
+        const imageUrl = res.url.split("?")[0];
         setState({
           ...state,
           items: state.items.map((item: any, id: number) => {
@@ -86,13 +95,15 @@ export default function Create({ shop, loggedIn }: any) {
             } else {
               return {
                 ...item,
-                imageSrc: res.location,
+                imageSrc: imageUrl,
               };
             }
           }),
         });
       }
-    });
+    } catch {
+      console.log("error uploading");
+    }
   }
 
   return (

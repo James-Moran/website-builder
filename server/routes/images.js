@@ -2,11 +2,21 @@ const router = require("express").Router();
 
 var multer = require("multer");
 const upload = multer({ dest: "uploads/" });
-const { uploadFile } = require("../s3");
+const { uploadFile, generateUploadURL } = require("../s3");
 
 const fs = require("fs");
 const util = require("util");
 const unlinkFile = util.promisify(fs.unlink);
+
+router.get("/uploadurl", async (req, res, next) => {
+  await generateUploadURL()
+    .then((result) => {
+      res.send({ success: true, url: result });
+    })
+    .catch((err) => {
+      res.send({ success: false });
+    });
+});
 
 router.post("/upload", upload.single("image"), async (req, res, next) => {
   await uploadFile(req.file)

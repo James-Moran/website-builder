@@ -166,3 +166,24 @@ export const uploadImage = async (image) => {
       return { success: false };
     });
 };
+
+export const uploadImageUrl = async () => {
+  return await fetch(databaseUrl + "/images/uploadurl", {
+    method: "GET",
+  })
+    .then((res) => res.json())
+    .catch((err) => {
+      console.log(err);
+      return { success: false };
+    });
+};
+
+export const uploadImageS3 = async (url, file) => {
+  await fetch(url, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+    body: file,
+  });
+};
