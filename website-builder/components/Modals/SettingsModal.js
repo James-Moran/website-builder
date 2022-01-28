@@ -1,9 +1,9 @@
 import { Fragment, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import Router from "next/router";
-import { useUser } from "./UserContext";
+import { useUser } from "../UserContext";
 import toast from "react-hot-toast";
-import { logout } from "../api-lib/endpoints";
+import { logout } from "../../api-lib/endpoints";
 
 const SettingsModal = ({
   isOpen,

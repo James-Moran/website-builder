@@ -1,9 +1,9 @@
 import { Fragment, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import isEmail from "validator/lib/isEmail";
-import { useUser } from "./UserContext";
+import { useUser } from "../UserContext";
 import toast from "react-hot-toast";
-import { login, register } from "../api-lib/endpoints";
+import { login, register } from "../../api-lib/endpoints";
 
 const SignUpModal = ({ isOpen, setIsOpen, callback }) => {
   const [user, setUser] = useUser();

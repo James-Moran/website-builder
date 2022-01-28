@@ -16,7 +16,7 @@ export default function Home() {
           <Link href="/create">
             <button
               type="button"
-              className="inline-flex justify-center px-4 py-2 my-4 text-xl font-medium text-white bg-black border border-transparent rounded-md hover:bg-gray-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-red-500 disabled:bg-gray-600 max-w-fit"
+              className="inline-flex justify-center px-4 py-2 my-4 text-xl font-medium text-white bg-black border border-transparent rounded-md max-w-fit"
               onClick={() => {}}
             >
               Get Started

@@ -3,7 +3,7 @@ import { useState } from "react";
 import Link from "next/link";
 import toast from "react-hot-toast";
 
-import SignUpModal from "./SignUpModal";
+import SignUpModal from "./Modals/SignUpModal";
 import { useUser } from "./UserContext";
 import { logout } from "../api-lib/endpoints";
 
